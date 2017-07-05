@@ -49,16 +49,7 @@
 //-----------------------test03较为全面的增删改查接口---------------------
 let SQLite3 = require('sqlite3').verbose();
 let db=new SQLite3.Database('E:\\node_work\\pt_jianhu\\data\\ibcs.db');
-function dbTool(path) {
-    this.db=new SQLite3.Database(path);
-    // this.insert=insert;
-    // this.update=update;
-    // this.del=del;
-    // this.selectFirst=selectFirst;
-    // this.selectAll=selectCount;
-    // this.selectCount=selectCount;
-}
-function createTable(db,obj) {
+function createTable(obj) {
     let param_array=[],param_string;
     obj.param_list.forEach(function (value, key) {
         param_array.push(key+' '+value);
@@ -78,7 +69,7 @@ function createTable(db,obj) {
 // let obj_create={table_name:'CardType',param_list:param_map};
 // createTable(obj_create);
 // 增
-function insert(db,obj) {
+function insert(obj) {
     if (!obj) {
         // callback && callback('params error');
         console.log('插入失败，传参为空----------');
@@ -164,7 +155,7 @@ function update(obj) {
     //     }
     // );
 // 查询（只获取第一条记录）
-function selectFirst(db,obj) {
+function selectFirst(obj) {
     if(!obj){
         console.log('查找失败，参数不能为空');
         return;
@@ -206,7 +197,7 @@ function selectFirst(db,obj) {
 //     }
 // );
 // 查询全部记录
-function selectAll(db,obj) {
+function selectAll(obj) {
     if(!obj){
         console.log('查找失败，参数不能为空');
         return;
@@ -217,7 +208,7 @@ function selectAll(db,obj) {
             param_val.push(value);
         });
         if(param_key.length>1){
-            str_where=param_key.join(' = ? and ');
+            str_where=param_key.join(' = ? '+obj.where_connect+' ');
         }
         let pro=new Promise(function (rej, res) {
             console.log("select * from "+obj.table_name+" where "+str_where+" = ?;");
@@ -239,11 +230,13 @@ function selectAll(db,obj) {
         return pro;
     }
 }
-// selectAll({table_name:'s_config',where_list:new Map([['clabel','team01'],['cnote1','坏人']])}).then(function (rows) {
-//     for(let row of rows){
-//         console.log('查找全部-----------'+row.ccontent+'--------'+row.cnote1);
-//     }
-// });
+selectAll({table_name:'s_config',where_list:new Map([['clabel','product'],['clabel','logo_url'],['clabel','finish'],['clabel','theme_color']]),
+where_connect:'or'})
+    .then(function (rows) {
+    for(let row of rows){
+        console.log('查找全部-----------'+row.ccontent+'--------'+row.cnote1);
+    }
+});
 // 查询部分记录
 // function listTest(obj, callback) {
 //     var sql = "select * from CardType";
@@ -283,7 +276,7 @@ function selectAll(db,obj) {
 //     }
 // });
 // 删
-function del(db,obj){
+function del(obj){
     if (!obj) {
         console.log('删除失败---传了空参');
         // callback && callback('params error');
@@ -330,7 +323,7 @@ function del(db,obj){
 //     console.log('删除成功---------------------');
 // });
 // 记录条数查询
-function selectCount(db,table) {
+function selectCount(table) {
     let pro=new Promise(function (rej, res) {
         db.get("select count(*) as cnt from "+table,
             function(err,obj) {
@@ -358,11 +351,11 @@ function selectCount(db,table) {
 //     console.log('一共有'+obj.cnt+'条数据');
 // });
 module.exports={
-//     // insert:insert,//table_name:'s_config',param_list:map_insert[['clabel','room'],['ccontent','三次元'],['cnote1','员工宿舍']]
-      update:update //{table_name:'s_config',param_list:map_update,where_list:where_update}
-//     // del:del,//{table_name:'s_config',where_list:new Map([['clabel','team01'],['cnote1','坏人']])}
-//     // selectFirst:selectFirst,//{table_name:'s_config',where_list:where_selectFirst}
-//     // selectAll:selectAll,//{table_name:'s_config',where_list:new Map([['clabel','team01'],['cnote1','坏人']])}
-//     // selectCount:selectCount//table
-//     dbTool:dbTool
+    insert:insert,//table_name:'s_config',param_list:map_insert[['clabel','room'],['ccontent','三次元'],['cnote1','员工宿舍']]
+    update:update, //{table_name:'s_config',param_list:map_update,where_list:where_update}
+    del:del,//{table_name:'s_config',where_list:new Map([['clabel','team01'],['cnote1','坏人']])}
+    selectFirst:selectFirst,//{table_name:'s_config',where_list:where_selectFirst}
+    selectAll:selectAll,//{table_name:'s_config',where_list:new Map([['clabel','team01'],['cnote1','坏人']])}
+    selectCount:selectCount,//table
+    createTable:createTable
 };
