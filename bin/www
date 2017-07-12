@@ -82,6 +82,7 @@ function onError(error) {
  */
 
 function onListening() {
+  console.log("程序正在监听：" + app.get("port") + "端口");
   var addr = server.address();
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr

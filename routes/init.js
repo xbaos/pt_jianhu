@@ -5,7 +5,7 @@
 //文字引导，初始化路由
 var express = require('express');
 var router = express.Router();
-var db_tool=require('../data/sqlite');
+var db_tool=require('../db/sqlite');
 //用户完成文字引导后，发put请求，包含finish参数true，更新后台数据库完成状态----UPDATE
 router
     .put('/',function(req, res,next) {
@@ -14,7 +14,7 @@ router
         .then(function () {
             console.log('更新成功');
             // res.json({ message: '更新成功！！！' });
-            db_tool
+            // db_tool
         })
         .then(function () {
 
