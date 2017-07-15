@@ -5,13 +5,13 @@ var fs = require("fs");
 function copyFile(src, dist) {
     fs.writeFileSync(dist, fs.readFileSync(src));
 }
-function upload(req,res) {
+function upload_music(req,res) {
     console.log(req);
     let file=req.files.file;
     let path='D:\\Program Files\\ibcs_t\\bin\\musics\\'+file.name;
     copyFile(file.path,path);
-    res.json({upload:'success'});
+    res.json({upload_music:'success'});
 }
 module.exports={
-  upload:upload
+  upload_music:upload_music
 };

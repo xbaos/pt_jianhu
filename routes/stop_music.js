@@ -2,7 +2,7 @@
  * Created by Administrator on 2017/7/8.
  */
 var fs = require('fs');
-var tcpReq=require('../module/tcpClient');
+var tcpReq=require('../tcp/tcpClient');
 var util=require('util');
 let filePath='E:\\work_zx\\json\\test_task.json';
 let path1='E:\\work_zx\\jianhu_pt\\pt_cs\\bin\\tmp\\TerminalInfo.json';

@@ -125,9 +125,20 @@ function update(obj) {
             arr_where.push(key);
             param_val.push(value)
         });
+        if(obj.where_connect=='or'){
+            for (let index in param_key){
+                if(index!=0){
+                    param_key[index]=param_key[0];
+                }
+            }
+        }
         if(arr_where.length>1){
-            str_where=arr_where.join(' = ? and ');
-        }else str_where=arr_where[0];
+            str_where=arr_where.join(' = ? '+obj.where_connect+' ');
+        }
+        // if(arr_where.length>1){
+        //     str_where=arr_where.join(' = ? and ');
+        // }
+        else str_where=arr_where[0];
         let pro=new Promise(function (rej, res) {
             let sql="update "+obj.table_name+" set "+str_key+" = ? where "+str_where+" = ?;";
             console.log(sql);
@@ -147,14 +158,22 @@ function update(obj) {
         return pro;
     }
 };
-// let map_update=new Map([['ccontent','辣翅五根'],['cnote1','全家桶']]);
-// let where_update=new Map([['clabel','team01'],['cnote1','夜宵']]);
-// let obj_update={table_name:'s_config',param_list:map_update,where_list:where_update};
-// update(obj_update).then(function () {
-//         console.log('更新成功-----------promise');
-//     }
-// );
-// 查询（只获取第一条记录）
+// let map_update=new Map([['ucontent','0']]);
+// let where_update=new Map([['uid','user01'],['ulabel','finish_new']]);
+// let obj_update={table_name:'s_usersconfig',param_list:map_update,where_list:where_update,where_connect:'and'};
+// update({table_name:'s_config',param_list:new Map([['ccontent','xbao--100']]),where_list:new Map([['clabel','product']])})
+//     .then(function () {
+//         console.log('更新1成功-----------promise');
+//         update({table_name:'s_config',param_list:new Map([['ccontent','1.1.2']]),where_list:new Map([['clabel','version']])})
+//             .then(function () {
+//                 console.log('更新2成功-----------promise');
+//                 update({table_name:'s_config',param_list:new Map([['ccontent','www.xbao.com']]),where_list:new Map([['clabel','logo_url']])})
+//                     .then(function () {
+//                         console.log('更新3成功-----------promise');
+//                     });
+//             });
+//     });
+// 查询（只获取第一条记录）单条记录
 function selectFirst(obj) {
     if(!obj){
         console.log('查找失败，参数不能为空');
@@ -205,7 +224,7 @@ function selectFirst(obj) {
 //         console.log('-----------'+row.uid+'--------'+row.upwd);
 //     }
 // );
-// 查询全部记录
+// 查询多条记录
 function selectAll(obj) {
     if(!obj){
         console.log('查找失败，参数不能为空');
@@ -237,7 +256,7 @@ function selectAll(obj) {
                         // callback && callback(err);
                     } else {
                         console.log(row);
-                        console.log('回调里面-------------'+row.clabel+'$$$$'+row.ccontent);
+                        // console.log('回调里面-------------'+row.clabel+'$$$$'+row.ccontent);
                         rej(row);
                         // callback && callback();
                     }
@@ -246,7 +265,7 @@ function selectAll(obj) {
         return pro;
     }
 }
-// selectAll({table_name:'s_config',where_list:new Map([['clabel','product'],['clabel1','logo_url'],['clabel2','finish'],
+// selectAll({table_name:'s_config',where_list:new Map([['clabel','product'],['clabel1','logo_url'],
 //     ['clabel3','theme_color']]), where_connect:'or'})
 //     .then(function (rows) {
 //         for(let row of rows){

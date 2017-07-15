@@ -9,7 +9,7 @@ function copyFile(src, dist) {
 // let toMusicFolder='D:\\Program Files\\ibcs_t\\bin\\musics\\demo1';
 // copyFile('D:\\Program Files\\ibcs_t\\bin\\musics\\常用铃声\\04新版眼保健操.mp3',
 //     'D:\\Program Files\\ibcs_t\\bin\\musics\\broad');
-function copy(fromMusicFolder,toMusicFolder) {
+function copy(fromMusicFolder,toMusicFolder,new_name) {
     let pro=new Promise(function (resolve, reject) {
         fs.readdir(toMusicFolder, function(err, files) {
             if (err){
@@ -21,7 +21,12 @@ function copy(fromMusicFolder,toMusicFolder) {
                         fs.unlinkSync(toMusicFolder +'\\'+ file);
                     })
                 }
-                let dest=toMusicFolder + '\\'+fromMusicFolder.split('\\').pop();
+                let dest=toMusicFolder + '\\';
+                if(new_name){
+                    dest+=new_name;
+                }else {
+                    dest+=fromMusicFolder.split('\\').pop();
+                }
                 console.log('src------------'+fromMusicFolder);
                 console.log('dest-----------'+dest);
                 copyFile(fromMusicFolder, dest);
