@@ -23,10 +23,12 @@ var task_list=require('./routes/task_list');
 var do_task=require('./routes/do_task');
 var terminal_list=require('./routes/terminal_list');
 var terminal_state=require('./routes/terminal_state');
+var terminal_info=require('./routes/terminal_info');
 var terminal_control=require('./routes/terminal_contrl');
 var music_list=require('./routes/music_list');
 var do_music=require('./routes/do_music');
 var stop_music=require('./routes/stop_music');
+var group = require('./routes/group');
 //------------------------------------------------
 var app = express();
 
@@ -41,6 +43,14 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.all('*', function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
+    res.header("X-Powered-By", ' 3.2.1');
+    res.header("Content-Type", "application/json;charset=utf-8");
+    next();
+});
 app.use('/', index);
 app.use('/users', users);
 app.use('/init', init);
@@ -150,10 +160,20 @@ app.post('/terminal_control',terminal_control.terminal_control);
 app.post('/task_list',task_list.task_list);
 app.get('/terminal_list',terminal_list.terminal_list);
 app.get('/terminal_state',terminal_state.terminal_state);
+app.get('/terminal_info',terminal_info.terminal_info);
 app.get('/music_list',music_list.music_list);
 app.post('/do_music',do_music.do_music);
 app.post('/stop_music',stop_music.stop_music);
 app.post('/upload',multipart_middleware,upload.upload);
+
+
+app.get("/getAllGroup",group.getAllGroup);
+app.get("/getTerminalByGroup",group.getTerminalByGroup);
+app.post('/addGroup',group.addGroup);
+app.delete('/group',group.deleteGroup);
+app.patch('/group',group.editGroup);
+
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
