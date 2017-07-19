@@ -18,6 +18,7 @@ var db_tool=require('./db/sqlite');
 var index = require('./routes/index');
 var users = require('./routes/users');
 var init = require('./routes/init');
+var aosrc_manage=require('./routes/aosrc_manage');
 var upload_music=require('./routes/upload_music');
 var task_list=require('./routes/task_list');
 var do_task=require('./routes/do_task');
@@ -29,6 +30,9 @@ var do_music=require('./routes/do_music');
 var stop_music=require('./routes/stop_music');
 var upload_config=require('./routes/upload_config');
 var info_burning=require('./routes/info_burning');
+var aosrc_manage=require('./routes/aosrc_manage');
+var user_list=require('./routes/user_list');
+var port_list=require('./routes/port_list');
 //------------------------------------------------
 var app = express();
 
@@ -46,6 +50,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', index);
 app.use('/users', users);
 app.use('/init', init);
+app.use('/aosrc', aosrc_manage);
+app.use('/user_list',user_list);
+app.use('/port_list',port_list);
 app.post('/login',function (req,res,next) {
 
     //android  x-www-form-urlencoded key-value;
@@ -67,31 +74,36 @@ app.post('/login',function (req,res,next) {
         where_connect:'and'})
         .then(function (row) {
             console.log('----uid'+row.uid+'----upwd'+row.upwd+ '登录成功');
-            let ulevel=row.ulevel,product,logo_url,theme_color,finish_new;
-            db_tool.selectAll({table_name:'s_config',where_list:new Map([['clabel','product'],['clabel1','logo_url'],
-                ['clabel3','theme_color']]), where_connect:'or'})
-                .then(function (rows) {
-                    for(let row of rows){
-                        switch (row.clabel){
-                            case 'product':
-                                product=row.ccontent;
-                                break;
-                            case 'logo_url':
-                                logo_url=row.ccontent;
-                                break;
-                            case 'theme_color':
-                                theme_color=row.ccontent;
-                                break;
-                        }
-                        console.log('这条记录为-----------'+row.ccontent+'--------'+row.cnote1);
-                    }
-                    db_tool.selectFirst({table_name:'s_usersconfig',where_list:new Map([['uid','admin'],['ulabel','finish_new'],
-                        ]), where_connect:'and'})
-                        .then(function (row) {
-                            let finish_new=row.ucontent;
-                            res.status(200);
-                            return res.json({login:'success',uid:uid,upwd:upwd,ulevel:ulevel,product:product,logo_url:logo_url,
-                                theme_color:theme_color,finish_new:finish_new});
+            let ulevel=row.ulevel,upriority,product,logo_url,theme_color,finish_new;//ulevel为用户等级，upriority为用户网络优先级
+            db_tool.selectFirst({table_name:'s_usersconfig',where_list:new Map([['uid',uid],['ulabel','netpriority']]),
+                where_connect:'and'})
+                .then(function (row) {
+                    upriority=row.ucontent;
+                    db_tool.selectAll({table_name:'s_config',where_list:new Map([['clabel','product'],['clabel1','logo_url'],
+                        ['clabel3','theme_color']]), where_connect:'or'})
+                        .then(function (rows) {
+                            for(let row of rows){
+                                switch (row.clabel){
+                                    case 'product':
+                                        product=row.ccontent;
+                                        break;
+                                    case 'logo_url':
+                                        logo_url=row.ccontent;
+                                        break;
+                                    case 'theme_color':
+                                        theme_color=row.ccontent;
+                                        break;
+                                }
+                                console.log('这条记录为-----------'+row.ccontent+'--------'+row.cnote1);
+                            }
+                            db_tool.selectFirst({table_name:'s_usersconfig',where_list:new Map([['uid','admin'],['ulabel','finish_new'],
+                            ]), where_connect:'and'})
+                                .then(function (row) {
+                                    let finish_new=row.ucontent;
+                                    res.status(200);
+                                    return res.json({login:'success',uid:uid,upwd:upwd,ulevel:ulevel,upriority:upriority,
+                                        product:product, logo_url:logo_url,theme_color:theme_color,finish_new:finish_new});
+                                });
                         });
                 });
             // role=row.uid;
@@ -173,5 +185,4 @@ app.use(function(err, req, res, next) {
     res.status(err.status || 500);
   res.render('error');
 });
-
 module.exports = app;
