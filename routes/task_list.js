@@ -2,7 +2,7 @@
  * Created by Administrator on 2017/7/6.
  */
 var fs = require('fs');
-var tcpReq=require('../module/tcpClient');
+var tcpReq=require('../tcp/tcpClient');
 var util=require('util');
 let filePath='E:\\work_zx\\json\\test_task.json';
 let path1='D:\\Program Files\\ibcs_t\\bin\\tmp\\TaskInfo.json';
@@ -16,10 +16,6 @@ function task_list(req,res) {
     // let upwd = "";
     console.log(req);
     console.log('-----------------------------------------------------------------');
-    // if(req.body != null){
-    //     uid = req.body.uid;
-    //     upwd = req.body.upwd;
-    // }else{
     if(req.query){
         uid = req.query.uid;
         // upwd =req.query.upwd;
@@ -36,9 +32,14 @@ function task_list(req,res) {
         console.log(task_all);
         let task_today=[];
         let week_today=new Date().getDay();
+        if(week_today==0){
+            week_today=7;
+        }
+        console.log('week_today-----------'+week_today);
         let week;
         for(let plan of task_all){
             week=plan.week.split(',');
+            console.log('week数组----------------'+week);
             if(week[week_today-1]==week_today){
                 console.log(plan);
                 task_today.push(plan);
