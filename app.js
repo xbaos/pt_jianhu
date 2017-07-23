@@ -14,6 +14,7 @@ var util = require('util');
 var tcpReq=require('./module/tcpClient');
 var md5=require('./module/md5');
 var db_tool=require('./db/sqlite');
+var ip_tool=require('./module/get_ip');
 //--------------------------------------------路由模块
 var index = require('./routes/index');
 var users = require('./routes/users');
@@ -33,6 +34,7 @@ var info_burning=require('./routes/info_burning');
 var aosrc_manage=require('./routes/aosrc_manage');
 var user_list=require('./routes/user_list');
 var port_list=require('./routes/port_list');
+var timer=require('./routes/timer');
 //------------------------------------------------
 var app = express();
 
@@ -53,6 +55,7 @@ app.use('/init', init);
 app.use('/aosrc', aosrc_manage);
 app.use('/user_list',user_list);
 app.use('/port_list',port_list);
+app.use('/timer',timer);
 app.post('/login',function (req,res,next) {
 
     //android  x-www-form-urlencoded key-value;

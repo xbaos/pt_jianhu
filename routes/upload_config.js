@@ -4,13 +4,15 @@
 var fs = require("fs");
 var copy=require('../module/copy');
 var db_tool=require('../db/sqlite');
+var ip_tool=require('../module/get_ip');
 function copyFile(src, dist) {
     fs.writeFileSync(dist, fs.readFileSync(src));
 }
 function upload_config(req,res) {
     console.log(req);
     let file=req.files.file;
-    let logo_url='http://192.168.9.108:3000/images/'+file.name;
+    let ip=ip_tool.getIPAdress();
+    let logo_url='http://'+ip+':3000/images/'+file.name;
     let product=req.body.product;
     let version=req.body.version;
     let path='E:\\node_work\\pt_jianhu\\public\\images';

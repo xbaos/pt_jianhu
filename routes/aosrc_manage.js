@@ -6,13 +6,16 @@ var db_tool=require('../db/sqlite');
 var express = require('express');
 var router = express.Router();
 let aosrc_list=function (req,res,next) {
+    // let uid = "";
     let ulevel = "";
     console.log(req);
     console.log('-----------------------------------------------------------------');
     if (req.params) {
+        // uid = req.params.uid;
         ulevel = req.params.ulevel;
     }
     if (req.body != null && !ulevel) {
+        // uid = req.body.uid;
         ulevel = req.body.ulevel;
     }
     if (ulevel == '0') {

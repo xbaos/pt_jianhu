@@ -23,7 +23,7 @@ function terminal_control(req,res) {
         on_off = req.query.on_off;
         // cmd = req.body.cmd;
     }
-    if(req.body!=null&&!ulevel){
+    if(req.body!=null&&!upriority){
         // tid = req.body.tid;
         upriority=req.body.upriority;
         tvolume = req.body.tvolume;

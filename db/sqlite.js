@@ -103,9 +103,8 @@ function insert(obj) {
         return pro;
     }
 }
-// let map_insert=new Map([['uid','admin'],['atype','1'],['aoid','7012'],['adefault','0'],
-//     ['acaption','节目源12'],['acontent','7012'],['adata','0']]);
-// let obj_insert={table_name:'s_aosrc',param_list:map_insert};
+// let map_insert=new Map([['uid','admin'],['sactive',0],['scaption','有点吊']]);
+// let obj_insert={table_name:'t_schema',param_list:map_insert};
 // insert(obj_insert).then(function () {
 //     console.log('插入成功-----------promise');
 //     }
@@ -159,6 +158,7 @@ function update(obj) {
         return pro;
     }
 };
+//--------------------------------同时更新多条记录demo----------------------------
 // let map_update=new Map([['ucontent','0']]);
 // let where_update=new Map([['uid','user01'],['ulabel','finish_new']]);
 // let obj_update={table_name:'s_usersconfig',param_list:map_update,where_list:where_update,where_connect:'and'};
@@ -173,6 +173,14 @@ function update(obj) {
 //                         console.log('更新3成功-----------promise');
 //                     });
 //             });
+//     });
+//--------------------------------更新单条记录demo----------------------------
+// update({table_name:'t_schema',param_list:new Map([['uid','user01'],['sactive',1],['scaption','牛魔王']])
+//     ,where_list:new Map([['iid',29]]),where_connect:'and'})
+//     .then(function () {
+//         console.log('更新成功--------------');
+//     },function (err) {
+//         console.log('更新失败--------------'+err);
 //     });
 // 查询（只获取第一条记录）单条记录
 function selectFirst(obj) {
@@ -233,41 +241,60 @@ function selectAll(obj) {
         console.log('查找失败，参数不能为空');
         return;
     }else{
-        let param_key=[],param_val=[],str_key='',str_where='';
-        obj.where_list.forEach(function (value, key) {
-            param_key.push(key);
-            param_val.push(value);
-        });
-        if(obj.where_connect=='or'){
-            for (let index in param_key){
-                if(index!=0){
-                    param_key[index]=param_key[0];
+        if(obj.where_connect=='none'){
+            let pro=new Promise(function (rej, res) {
+                console.log("select * from "+obj.table_name+";");
+                db.all("select * from "+obj.table_name+";",
+                    function(err,row) {
+                        if (err) {
+                            console.log('fail on add ' + err);
+                            // callback && callback(err);
+                        } else {
+                            console.log(row);
+                            // console.log('回调里面-------------'+row.clabel+'$$$$'+row.ccontent);
+                            rej(row);
+                            // callback && callback();
+                        }
+                    });
+            });
+            return pro;
+        }else {
+            let param_key=[],param_val=[],str_key='',str_where='';
+            obj.where_list.forEach(function (value, key) {
+                param_key.push(key);
+                param_val.push(value);
+            });
+            if(obj.where_connect=='or'){
+                for (let index in param_key){
+                    if(index!=0){
+                        param_key[index]=param_key[0];
+                    }
                 }
             }
+            if(param_key.length>1){
+                str_where=param_key.join(' = ? '+obj.where_connect+' ');
+            }else {
+                str_where=param_key[0];
+            }
+            let pro=new Promise(function (rej, res) {
+                console.log("select * from "+obj.table_name+" where "+str_where+" = ?;");
+                console.log(param_val);
+                db.all("select * from "+obj.table_name+" where "+str_where+" = ?;",
+                    param_val,
+                    function(err,row) {
+                        if (err) {
+                            console.log('fail on add ' + err);
+                            // callback && callback(err);
+                        } else {
+                            console.log(row);
+                            // console.log('回调里面-------------'+row.clabel+'$$$$'+row.ccontent);
+                            rej(row);
+                            // callback && callback();
+                        }
+                    });
+            });
+            return pro;
         }
-        if(param_key.length>1){
-            str_where=param_key.join(' = ? '+obj.where_connect+' ');
-        }else {
-            str_where=param_key[0];
-        }
-        let pro=new Promise(function (rej, res) {
-            console.log("select * from "+obj.table_name+" where "+str_where+" = ?;");
-            console.log(param_val);
-            db.all("select * from "+obj.table_name+" where "+str_where+" = ?;",
-                param_val,
-                function(err,row) {
-                    if (err) {
-                        console.log('fail on add ' + err);
-                        // callback && callback(err);
-                    } else {
-                        console.log(row);
-                        // console.log('回调里面-------------'+row.clabel+'$$$$'+row.ccontent);
-                        rej(row);
-                        // callback && callback();
-                    }
-                });
-        });
-        return pro;
     }
 }
 // selectAll({table_name:'s_aosrc',where_list:new Map([['adefault','0']]), where_connect:'and'})
@@ -377,35 +404,69 @@ function del(obj){
     //         }
     //     });
 }
-// del({table_name:'s_aosrc',where_list:new Map([['aoid','7011'],['aoid1','7012']]),where_connect:'or'}).then(function () {
-//     console.log('删除成功---------------------');
-// });
+// selectAll({table_name:'t_taskplan',where_list:new Map([['sid',24]])})
+//     .then(function (rows) {
+//         if(rows){
+//             del({table_name:'t_taskplan',where_list:new Map([['sid',24]]),where_connect:'and'})
+//                 .then(function () {
+//                     console.log('删除成功---------------------');
+//                     del({table_name:'t_schema',where_list:new Map([['iid',24]]),where_connect:'and'})
+//                         .then(function () {
+//                             console.log('删除成功---------------------');
+//
+//                         });
+//                 });
+//         }else {
+//             del({table_name:'t_schema',where_list:new Map([['iid',24]]),where_connect:'and'})
+//                 .then(function () {
+//                     console.log('删除成功---------------------');
+//
+//                 });
+//         }
+//     },function (err) {
+//         console.log('----------err0------------------'+err);
+//     });
+
 // 记录条数查询
-function selectCount(table) {
-    let pro=new Promise(function (rej, res) {
-        db.get("select count(*) as cnt from "+table,
-            function(err,obj) {
-                if (err) {
-                    console.log('fail on add ' + err);
-                    // callback && callback(err);
-                } else {
-                    rej(obj);
-                    // callback && callback();
+function selectCount(obj) {
+    if(!obj){
+        console.log('查找失败，参数不能为空');
+        return;
+    }else{
+        let param_key=[],param_val=[],str_key='',str_where='';
+        obj.where_list.forEach(function (value, key) {
+            param_key.push(key);
+            param_val.push(value);
+        });
+        if(obj.where_connect=='or'){
+            for (let index in param_key){
+                if(index!=0){
+                    param_key[index]=param_key[0];
                 }
-            });
-    });
-    return pro;
-    // db.get("select count(*) as cnt from "+table,
-    //     function(err, obj) {
-    //         if (err) {
-    //             console.log('fail on count ' + err);
-    //             callback && callback(err);
-    //         } else {
-    //             callback && callback(obj);
-    //         }
-    //     });
+            }
+        }
+        if(param_key.length>1){
+            str_where=param_key.join(' = ? '+obj.where_connect+' ');
+        }else {
+            str_where=param_key[0];
+        }
+        let pro=new Promise(function (rej, res) {
+            db.get("select count(*) as cnt from "+obj.table_name+" where "+str_where+" = ?;",
+                param_val,
+                function(err,obj) {
+                    if (err) {
+                        console.log('fail on add ' + err);
+                        // callback && callback(err);
+                    } else {
+                        rej(obj);
+                        // callback && callback();
+                    }
+                });
+        });
+        return pro;
+    }
 }
-// selectCount('s_config').then(function (obj) {
+// selectCount({table_name:'s_aosrc',where_list:new Map([['uid','user02']]),where_connect:'and'}).then(function (obj) {
 //     console.log('一共有'+obj.cnt+'条数据');
 // });
 module.exports={
