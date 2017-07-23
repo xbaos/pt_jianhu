@@ -7,6 +7,7 @@ function copyFile(src, dist) {
 }
 function upload_music(req,res) {
     console.log(req);
+    console.log(req.files);
     let file=req.files.file;
     let path='D:\\Program Files\\ibcs_t\\bin\\musics\\'+file.name;
     copyFile(file.path,path);

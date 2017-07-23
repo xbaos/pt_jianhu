@@ -476,5 +476,6 @@ module.exports={
     selectFirst:selectFirst,//{table_name:'s_config',where_list:where_selectFirst}
     selectAll:selectAll,//{table_name:'s_config',where_list:new Map([['clabel','team01'],['cnote1','坏人']])}
     selectCount:selectCount,//table
-    createTable:createTable
+    createTable:createTable,
+    db:db
 };
