@@ -180,7 +180,6 @@ app.get('/music_list',music_list.music_list);
 app.post('/do_music',do_music.do_music);
 app.post('/stop_music',stop_music.stop_music);
 
-
 app.get("/getAllGroup",group.getAllGroup);
 app.get("/getTerminalByGroup",group.getTerminalByGroup);
 app.post('/addGroup',group.addGroup);

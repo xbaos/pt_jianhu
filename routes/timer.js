@@ -1,6 +1,7 @@
 /**
  * Created by Administrator on 2017/7/19.
  */
+//定时任务模块
 var db_tool=require('../db/sqlite');
 var express = require('express');
 var router = express.Router();
@@ -87,7 +88,12 @@ function insert_schema(req,res,next) {
     db_tool.insert(obj_insert)
         .then(function () {
             console.log('插入成功-----------promise');
-            return res.json({success:true,data:'insert_success'});
+            db_tool.get_last_row('t_schema','iid',{key:'uid',value:uid})
+                .then(function (row) {
+                    return res.json({success:true,data:row});
+                },function (err) {
+                    return res.json({success:false,err:err});
+                });
             },function (err) {
             return res.json({success:false,err:err});
         }
@@ -231,6 +237,14 @@ function task_list(req,res,next) {
             .then(function (rows) {
                 if (rows) {
                     console.log(rows);
+                    for (let row of rows){
+                        let num=parseInt(row.ttime);
+                        let time=time_transform_tool.numTo_time(num);
+                        row.ttime=time;
+                        let day_interval=row.tcycledate-2440588;//查库中间隔天数
+                        let date_end=date_tool.interval_todate(day_interval,'1970-01-01');
+                        row.tcycledate=date_end;
+                    }
                     return res.json({success:true,data:rows});
                 }
             }, function (err) {

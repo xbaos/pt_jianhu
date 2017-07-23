@@ -48,6 +48,7 @@
 // db.close();
 //-----------------------test03较为全面的增删改查接口---------------------
 let SQLite3 = require('sqlite3').verbose();
+var sort_tool=require('../module/sort');
 let db=new SQLite3.Database('D:\\Program Files\\ibcs_t\\bin\\lib\\ibcs.db');
 function createTable(obj) {
     let param_array=[],param_string;
@@ -469,6 +470,28 @@ function selectCount(obj) {
 // selectCount({table_name:'s_aosrc',where_list:new Map([['uid','user02']]),where_connect:'and'}).then(function (obj) {
 //     console.log('一共有'+obj.cnt+'条数据');
 // });
+function get_last_row(table_name,key_sort,property_select) {
+    let obj_select;
+    if(property_select){
+        obj_select={table_name:table_name,where_list:new Map([[property_select.key,property_select.value]]),where_connect:'and'}
+    }else {
+        obj_select={table_name:table_name,where_connect:'none'}
+    }
+    let pro=new Promise(function (res,rej) {
+        selectAll(obj_select)
+            .then(function (rows) {
+                if(rows.length){
+                    rows=sort_tool.rows_sort(rows,key_sort);
+                    console.log('---------------------------------------------test sqlite last row-------------------------');
+                    console.log(rows[rows.length-1]);
+                    res(rows[rows.length-1]);
+                }
+                },function (err) {
+                rej(err);
+            });
+    });
+    return pro;
+}
 module.exports={
     insert:insert,//table_name:'s_config',param_list:map_insert[['clabel','room'],['ccontent','三次元'],['cnote1','员工宿舍']]
     update:update, //{table_name:'s_config',param_list:map_update,where_list:where_update}
@@ -477,5 +500,6 @@ module.exports={
     selectAll:selectAll,//{table_name:'s_config',where_list:new Map([['clabel','team01'],['cnote1','坏人']])}
     selectCount:selectCount,//table
     createTable:createTable,
+    get_last_row:get_last_row,
     db:db
 };
