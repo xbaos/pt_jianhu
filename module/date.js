@@ -42,7 +42,7 @@ function interval_todate(idays,date) {
 }
 // console.log(getdate(new Date('12-18-2002')));
 // console.log(getday_interval('2017-07-06','1970-01-01'));
-console.log(interval_todate('17353','1970-01-01'));
+// console.log(interval_todate('17353','1970-01-01'));
 module.exports={
     getdate:getdate,
     getday_interval:getday_interval,

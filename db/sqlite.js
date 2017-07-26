@@ -106,8 +106,19 @@ function insert(obj) {
 }
 // let map_insert=new Map([['uid','admin'],['sactive',0],['scaption','有点吊']]);
 // let obj_insert={table_name:'t_schema',param_list:map_insert};
-// insert(obj_insert).then(function () {
-//     console.log('插入成功-----------promise');
+// insert({table_name:'t_taskplan',param_list:new Map([['uid','admin'],['sid',12],['tstatus',0],['tcaption',
+//     'xbao_test'], ['ttime',41220],['tlevel',0],['tcycle',0],['tcycleweek','1,2,0,4,5,6,7,'],['tcycledate',
+//     2457933],['ttasktype', 0],['tsleep',200],['tctrlarea',1], ['tnote1',
+//     '[文件] 广播应急1.mp3 [文件] 任贤齐 - 天涯.mp3 [文件] 谭咏麟 - 讲不出再见.mp3 ']
+//     ,['tnote2','001110111011']])}).then(function () {
+//         get_last_row('t_taskplan','iid',{key:'uid',value:'admin'})
+//             .then(function (row) {
+//                 console.log('------------------get insert row------------------');
+//                 console.log(row);
+//             });
+//         console.log('插入成功-----------promise');
+//     },function (err) {
+//         console.log(err);
 //     }
 // );
 // 改
@@ -183,6 +194,15 @@ function update(obj) {
 //     },function (err) {
 //         console.log('更新失败--------------'+err);
 //     });
+//--------------------------------更新定时任务demo--------------------------------
+// update({table_name:'t_taskplan',param_list:new Map([['uid','admin'],['sid',12],['tstatus',0],['tcaption',
+//     'omggagag'], ['ttime',12345],['tlevel',1],['tcycle',0],['tcycleweek','1,2,3,4,0,6,7,'],['tcycledate',
+//     2457933],['ttasktype', ttasktype],['tsleep',200],['tctrlarea',1], ['tnote1',
+//     '[文件] 任贤齐 - 天涯.mp3 [文件] 任贤齐 - 天涯.mp3 '],['tnote2','110001001111']]),where_list:new Map([['iid',137]]),where_connect:'and'})
+//     .then(function () {
+//
+//     });
+//---------------------------------------------------------------------------------
 // 查询（只获取第一条记录）单条记录
 function selectFirst(obj) {
     if(!obj){
@@ -467,7 +487,7 @@ function selectCount(obj) {
         return pro;
     }
 }
-// selectCount({table_name:'s_aosrc',where_list:new Map([['uid','user02']]),where_connect:'and'}).then(function (obj) {
+// selectCount({table_name:'t_channels',where_list:new Map([['uid','admin'],['cmodel','3400']]),where_connect:'and'}).then(function (obj) {
 //     console.log('一共有'+obj.cnt+'条数据');
 // });
 function get_last_row(table_name,key_sort,property_select) {

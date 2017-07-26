@@ -9,6 +9,9 @@ var db_tool=require('../db/sqlite');
 //用户完成文字引导后，发put请求，包含finish参数true，更新后台数据库完成状态----UPDATE
 router
     .put('/',function(req, res,next) {
+        console.log('------------------------------------test---------init------------------------------------');
+        console.log(req.body);
+        console.log('------------------------------------test---------end------------------------------------');
         let uid='';
         let finish_new='';
         //ionic

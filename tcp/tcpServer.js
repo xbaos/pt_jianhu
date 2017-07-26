@@ -35,7 +35,16 @@ var server = net.createServer(function(socket){
                 break;
             case 'CCT03':
                 socket.write('do_music success');
-                break
+                break;
+            case 'CCT08src':
+                socket.write('update_src success');
+                break;
+            case 'CCT08plan':
+                socket.write('update_plan success');
+                break;
+            case 'CCT08ctrl':
+                socket.write('update_ctrl success');
+                break;
         }
         // 给客户端返回数据 
         // for (let d of data){
@@ -54,7 +63,7 @@ var server = net.createServer(function(socket){
         console.log('服务端：客户端连接断开');
     });
 });
-server.listen(PORT, HOST, function(){
+server.listen(PORT1, HOST1, function(){
     console.log('TCP服务端：开始监听来自客户端的请求');
 });
 function arrCompare(arr0,arr1) {

@@ -3,6 +3,7 @@
  */
 //节目源管理
 var db_tool=require('../db/sqlite');
+var tcpReq=require('../tcp/tcpClient');
 var express = require('express');
 var router = express.Router();
 let aosrc_list=function (req,res,next) {
@@ -43,6 +44,7 @@ let aosrc_list=function (req,res,next) {
     }
 };
 let aosrc_delete=function (req,res,next) {
+    let cmd='CCT08'+'src';
     let ports = "";
     // console.log(req);
     console.log('-----------------------------------------------------------------');
@@ -64,7 +66,11 @@ let aosrc_delete=function (req,res,next) {
     db_tool.del({table_name:'s_aosrc',where_list:new Map(arr_map),where_connect:'or'})
         .then(function () {
             console.log('删除成功---------------------');
-            return res.json({aosrc_delete:'success'});
+                tcpReq.sendCmd(cmd,function (result) {
+                    console.log('-------------get tcp_server res'+result);
+                    return res.json({aosrc_delete:'success'});
+                });
+                // return res.json({aosrc_delete:'success'});
         },
             function () {
                 console.log('删除失败---------------------');
@@ -72,6 +78,7 @@ let aosrc_delete=function (req,res,next) {
         });
 };
 let aosrc_insert=function (req,res,next) {
+    let cmd='CCT08'+'src';
     let uid="";
     let ports = "";
     // console.log(req);
@@ -99,7 +106,11 @@ let aosrc_insert=function (req,res,next) {
             .then(function () {
                     console.log('插入成功-----------promise');
                     if(maps.indexOf(map)==(maps.length-1)){
-                        return res.json({aosrc_insert:'success'});
+                        tcpReq.sendCmd(cmd,function (result) {
+                            console.log('-------------get tcp_server res'+result);
+                            return res.json({aosrc_insert:'success'});
+                        });
+                        // return res.json({aosrc_insert:'success'});
                     }
                 }, function () {
                     console.log('插入失败-----------promise');

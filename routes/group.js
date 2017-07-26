@@ -1,4 +1,5 @@
 var db = require("../db/sqlite").db;
+var tcpReq=require('../tcp/tcpClient');
 function getAllGroup(req,res){
     let sql = "select * from t_channels where uid = '"+req.query.uid + "' and cmodel = 3200 ";
     db.all( sql,function(err,result){
@@ -32,6 +33,7 @@ function getTerminalByGroup(req,res){
 }
 
 function addGroup(req,res){
+    let cmd='CCT08'+'ctrl';
     console.log(req.body);
     let sql = 'begin transaction;\r\n';
     sql += "insert into t_channels (uid,cmodel,corder,ccaption,cdevno,cport,cactive,cvolume) values ('" + req.body.uid+"',3200,"+req.body.corder+",'"+req.body.ccaption+"',1,0,1,50);\r\n";
@@ -46,14 +48,21 @@ function addGroup(req,res){
             console.log(sql+"==>"+err);
             res.end();
         }else{
-            res.json({
-                success:true
+            tcpReq.sendCmd(cmd,function (result) {
+                console.log('-------------get tcp_server res'+result);
+                return res.json({
+                    success:true
+                });
             });
+            // return res.json({
+            //     success:true
+            // });
         }
     })
 }
 
 function deleteGroup(req,res){
+    let cmd='CCT08'+'ctrl';
     console.log(req.query.gid);
     let sql = 'begin transaction;\r\n';
     sql += "delete from t_channels where uid='"+req.query.uid +"' and cmodel =3200 and corder ="+req.query.gid+';\r\n';
@@ -65,14 +74,21 @@ function deleteGroup(req,res){
                     console.log(sql+"==>"+err);
                     res.end();
                 }else{
-                    res.json({
-                        success:true
+                    tcpReq.sendCmd(cmd,function (result) {
+                        console.log('-------------get tcp_server res'+result);
+                        return res.json({
+                            success:true
+                        });
                     });
+                    // return res.json({
+                    //     success:true
+                    // });
                 }
             })
 }
 
 function editGroup(req,res){
+    let cmd='CCT08'+'ctrl';
     console.log(req.body);
     let sql = 'begin transaction;\r\n';
     if(req.body.ccaption){
@@ -90,9 +106,15 @@ function editGroup(req,res){
                     console.log(sql+"==>"+err);
                     res.end();
                 }else{
-                    res.json({
-                        success:true
+                    tcpReq.sendCmd(cmd,function (result) {
+                        console.log('-------------get tcp_server res'+result);
+                        return res.json({
+                            success:true
+                        });
                     });
+                    // return res.json({
+                    //     success:true
+                    // });
                 }
             })
 }

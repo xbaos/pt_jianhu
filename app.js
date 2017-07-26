@@ -71,7 +71,7 @@ app.post('/login',function (req,res,next) {
     //android  x-www-form-urlencoded key-value;
     let uid = "";
     let upwd = "";
-    console.log(req);
+    // console.log(req);
     console.log('-----------------------------------------------------------------');
     if(req.query){
         uid = req.query.uid;
@@ -109,7 +109,7 @@ app.post('/login',function (req,res,next) {
                                 }
                                 console.log('这条记录为-----------'+row.ccontent+'--------'+row.cnote1);
                             }
-                            db_tool.selectFirst({table_name:'s_usersconfig',where_list:new Map([['uid','admin'],['ulabel','finish_new'],
+                            db_tool.selectFirst({table_name:'s_usersconfig',where_list:new Map([['uid',uid],['ulabel','finish_new'],
                             ]), where_connect:'and'})
                                 .then(function (row) {
                                     let finish_new=row.ucontent;
@@ -191,11 +191,11 @@ app.post('/upload_music',multipart_middleware,upload_music.upload_music);
 app.post('/upload_config',multipart_middleware,upload_config.upload_config);
 app.post('/info_burning',info_burning.info_burning);
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
-});
+// app.use(function(req, res, next) {
+//   var err = new Error('Not Found');
+//   err.status = 404;
+//   next(err);
+// });
 
 // error handler
 app.use(function(err, req, res, next) {
